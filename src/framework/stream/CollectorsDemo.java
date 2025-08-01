@@ -2,12 +2,14 @@ package framework.stream;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CollectorsDemo {
 
@@ -52,19 +54,59 @@ public class CollectorsDemo {
 		// 6. Grouping Elements
 		Map<Integer, List<String>> grouped = fruits.stream().collect(Collectors.groupingBy(x -> x.length()));
 		System.out.println("Grouping by length: " + grouped);
-		Map<Integer, String> groupedAndJoined = fruits.stream().collect(Collectors.groupingBy(String::length, Collectors.joining(", ")));
+		Map<Integer, String> groupedAndJoined = fruits.stream()
+				.collect(Collectors.groupingBy(String::length, Collectors.joining(", ")));
 		System.out.println("Grouping by length and joining: " + groupedAndJoined);
-		TreeMap<Integer, Long> treeMap = fruits.stream().collect(Collectors.groupingBy(String::length, TreeMap::new, Collectors.counting()));
+		TreeMap<Integer, Long> treeMap = fruits.stream()
+				.collect(Collectors.groupingBy(String::length, TreeMap::new, Collectors.counting()));
 		System.out.println("TreeMap Grouping by length: " + treeMap);
-		
+
 		// 7. Partitioning Elements
-		Map<Boolean, List<String>> partitioned = fruits.stream().collect(Collectors.partitioningBy(x -> x.length() > 5));
+		Map<Boolean, List<String>> partitioned = fruits.stream()
+				.collect(Collectors.partitioningBy(x -> x.length() > 5));
 		System.out.println("Partitioning by length > 5: " + partitioned);
-		
+
 		// 10. Mapping and collecting
 		List<String> collect = fruits.stream().collect(Collectors.mapping(String::toUpperCase, Collectors.toList()));
 		System.out.println("Mapping to uppercase: " + collect);
-		
+
+		examples();
+
 	}
 
+	private static void examples() {
+		// Example 1: Collecting names by length
+		List<String> names = Arrays.asList("Shivani", "Sweety", "Kirti", "Rohee", "Roa", "Romee");
+		System.out.println(names.stream().collect(Collectors.groupingBy(String::length)));
+
+		// Example 2 : Counting word occurances
+		String sentence = "hello world hello java world";
+		String[] split = sentence.split(" ");
+		Map<String, Long> collect = Stream.of(split).collect(Collectors.groupingBy(x -> x, Collectors.counting()));
+		System.out.println(collect);
+		
+		// Example 3 : Partitioning even and odd numbers
+		List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		Map<Boolean,List<Integer>> collect2 = numbers.stream().collect(Collectors.partitioningBy(x->x%2==0));
+		System.out.println("Partitioning even and odd numbers: " + collect2);
+		
+		// Example 4 : Summing values in map
+		Map<String, Integer> map = new HashMap<>();
+		map.put("Apple", 10);
+		map.put("Banana", 20);
+		map.put("Cherry", 30);
+		
+		Integer sum1 = map.values().stream().collect(Collectors.summingInt(Integer::intValue));
+		System.out.println("Sum of values in map using values: " + sum1);
+		
+		// Example 5 : Creating a map from Stream elements
+		Map<String, Integer> mapFromStream = Stream.of("apple", "banana", "cherry")
+				.collect(Collectors.toMap(String::toUpperCase, String::length));
+		
+		// Example 6 : Find Occurance of word using toMap
+		Map<String, Long> wordCountMap = Stream.of("apple", "banana", "apple", "orange", "banana", "kiwi")
+				.collect(Collectors.toMap(word -> word, word -> 1L, Long::sum));
+		System.out.println("Word count map: " + wordCountMap);
+		
+	}
 }
