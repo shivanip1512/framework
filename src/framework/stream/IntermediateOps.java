@@ -43,6 +43,33 @@ public class IntermediateOps {
 		System.out.println(stream6.count() + " " + stream6_1.count());
 		
 		
+		// 7. Peek
+		// Peek is an intermediate operation that allows you to perform an action on each
+//		Stream.iterate(1, x->x+1).skip(10).limit(100).peek(x -> System.out.println("Peeked: " + x)).count();
+		
+		// 8. flatMap
+		// Handle streams of collections, list or arrays where each element is itself a collection
+		// Flattens the nested structure so that they can be processed as a single sequence of elements
+		// Transform and flatten elements at the same time
+		List<List<String>> nestedList = Arrays.asList(
+				Arrays.asList("apple", "banana"),
+				Arrays.asList("orange", "kiwi"),
+				Arrays.asList("grape", "pear")
+		);
+		
+		List<String> flatMap = nestedList.stream()
+										 .flatMap(x->x.stream()) // Flatten the nested lists into a single stream
+										 .map(String::toUpperCase) // Transform each element to uppercase
+										 .toList();
+		System.out.println("FlatMap Result: " + flatMap);
+
+		List<String> list2 = Arrays.asList("Hello World", "Java Streams", "Intermediate Operations")
+								.stream()
+								.flatMap(s -> Arrays.stream(s.split(" ")))
+								.map(String::toUpperCase)
+								.toList();
+		System.out.println("FlatMap with Split: " + list2);
+		
 	}
 
 }
